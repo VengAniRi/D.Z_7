@@ -1,0 +1,102 @@
+def read_datas():
+	wf='D:\\recept\\recipes.txt'
+	fr=open(wf, 'rt')
+	l=[]
+	while True:
+		line=fr.readline()
+		if line == '\n':
+			continue
+		if not line:
+			break
+		if '\n' in line:
+			l1=line.replace("\n", '')
+			line=l1
+		l.append(line)
+
+	fr.close()
+	return l
+
+l=read_datas()
+
+def create_dict(l):
+	d0={}
+	le=len(l)
+	i=0
+	while True:
+		s_name=l[i]
+		k=int(l[i+1])
+		l4=[]
+		i += 2
+		for j in range(k):
+			l1=l[i].split('|')
+			l3=[]
+			l2=['ingredient_name', l1[0]]
+			l3.append(l2)
+			l2=['quantity', l1[1]]
+			l3.append(l2)
+			l2=['measure', l1[2]]
+			l3.append(l2)
+			d=dict(l3)
+			l4.append(d)
+			i += 1
+
+		d0[s_name]=l4
+		if i >= le:
+			break
+
+	return d0
+
+def get_index(cook_book, dish):
+	l_keys=cook_book.keys()
+	b=False
+	for i in l_keys:
+		if dish == i:
+			b=True
+			break
+	if not b:
+		i=None
+
+	return i
+
+def get_shop_list_by_dishes(dishes, cook_book, person_count):
+	d={}
+	le=len(dishes)
+	for i in range(le):
+		j=get_index(cook_book, dishes[i])
+		if j == None:
+			continue
+		dish=cook_book[j]
+		le=len(dish)
+		for k in range(le):
+			e=dish[k]
+			d5={}
+			d4={}
+			d2={}
+			d3={}
+			a=0
+			s=e['ingredient_name']
+			if s in d:
+				e1=d[s]
+				a=float(e['quantity'])
+			d2['measure']= e['measure']
+			d3['quantity']=(a+float(e['quantity']))*person_count
+			d4.update(d2)
+			d4.update(d3)
+			d5[s]=d4
+			d.update(d5)
+
+	return d
+
+l=read_datas()
+cook_book=create_dict(l)
+print("Задание: 1")
+print(' ')
+print(cook_book)
+print(' ')
+print("Задание: 2")
+print(' ')
+shop_list=get_shop_list_by_dishes(["Фахитос", "Омлет"], cook_book, 2)
+print(shop_list)
+print(' ')
+shop_list=get_shop_list_by_dishes(["Запеченный картофель", "Омлет"], cook_book, 2)
+print(shop_list)
